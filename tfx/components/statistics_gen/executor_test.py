@@ -44,7 +44,7 @@ class ExecutorTest(absltest.TestCase):
     # TODO(b/126245422): verify content of generated stats after we have stable
     # test data set.
 
-  def testDo(self):
+  def test_do(self):
     source_data_dir = os.path.join(
         os.path.dirname(os.path.dirname(__file__)), 'testdata')
     output_data_dir = os.path.join(

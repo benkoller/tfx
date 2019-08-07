@@ -40,7 +40,7 @@ class ComponentTest(tf.test.TestCase):
     unpacked_custom_config.custom_config.Unpack(conn_config)
     return conn_config
 
-  def testConstruct(self):
+  def test_construct(self):
     presto_example_gen = component.PrestoExampleGen(
         self.conn_config, query='query')
     self.assertEqual(
@@ -53,7 +53,7 @@ class ComponentTest(tf.test.TestCase):
     self.assertEqual('train', artifact_collection[0].split)
     self.assertEqual('eval', artifact_collection[1].split)
 
-  def testConstructWithOutputConfig(self):
+  def test_construct_with_output_config(self):
     presto_example_gen = component.PrestoExampleGen(
         self.conn_config,
         query='query',
@@ -74,7 +74,7 @@ class ComponentTest(tf.test.TestCase):
     self.assertEqual('eval', artifact_collection[1].split)
     self.assertEqual('test', artifact_collection[2].split)
 
-  def testConstructWithInputConfig(self):
+  def test_construct_with_input_config(self):
     presto_example_gen = component.PrestoExampleGen(
         self.conn_config,
         input_config=example_gen_pb2.Input(splits=[
@@ -93,7 +93,7 @@ class ComponentTest(tf.test.TestCase):
     self.assertEqual('eval', artifact_collection[1].split)
     self.assertEqual('test', artifact_collection[2].split)
 
-  def testBadConstruction(self):
+  def test_bad_construction(self):
     empty_config = presto_config_pb2.PrestoConnConfig()
     self.assertRaises(
         RuntimeError,

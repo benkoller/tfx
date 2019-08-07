@@ -78,7 +78,7 @@ class BaseHandlerTest(tf.test.TestCase):
     self.pipeline_path = os.path.join(self.chicago_taxi_pipeline_dir,
                                       'test_pipeline_airflow_1.py')
 
-  def testCheckPipelineDslPathInvalid(self):
+  def test_check_pipeline_dsl_path_invalid(self):
     flags_dict = {labels.ENGINE_FLAG: self.engine,
                   labels.PIPELINE_DSL_PATH: 'taxi_pipeline.py'}
     handler = FakeHandler(flags_dict)
@@ -87,7 +87,7 @@ class BaseHandlerTest(tf.test.TestCase):
     self.assertEqual(str(err.exception), 'Invalid pipeline path: {}'
                      .format(flags_dict[labels.PIPELINE_DSL_PATH]))
 
-  def testCheckDslRunnerWrongEngine(self):
+  def test_check_dsl_runner_wrong_engine(self):
     flags_dict = {labels.ENGINE_FLAG: 'kubeflow',
                   labels.PIPELINE_DSL_PATH: self.pipeline_path}
     handler = FakeHandler(flags_dict)
@@ -98,7 +98,7 @@ class BaseHandlerTest(tf.test.TestCase):
                      .format(flags_dict[labels.ENGINE_FLAG]))
 
   @mock.patch('subprocess.call', _MockSubprocess)
-  def testExtractPipelineArgs(self):
+  def test_extract_pipeline_args(self):
     flags_dict = {
         labels.ENGINE_FLAG: 'engine',
         labels.PIPELINE_DSL_PATH: 'path_to_pipeline_dsl'
@@ -107,7 +107,7 @@ class BaseHandlerTest(tf.test.TestCase):
     pipeline_args = handler._extract_pipeline_args()
     self.assertEqual(pipeline_args, {'pipeline_name': 'pipeline_test_name'})
 
-  def testGetHandlerHome(self):
+  def test_get_handler_home(self):
     flags_dict = {
         labels.ENGINE_FLAG: 'engine',
         labels.PIPELINE_DSL_PATH: 'path_to_pipeline_dsl'
@@ -117,7 +117,7 @@ class BaseHandlerTest(tf.test.TestCase):
         os.path.join(os.environ['HOME'], 'home_dir', ''),
         handler._get_handler_home('home_dir'))
 
-  def testCheckDslRunnerAirflow(self):
+  def test_check_dsl_runner_airflow(self):
     pipeline_path = os.path.join(self.chicago_taxi_pipeline_dir,
                                  'test_pipeline_airflow_1.py')
     flags_dict = {
@@ -127,7 +127,7 @@ class BaseHandlerTest(tf.test.TestCase):
     handler = FakeHandler(flags_dict)
     self.assertIsNone(handler._check_dsl_runner())
 
-  def testCheckDslRunnerKubeflow(self):
+  def test_check_dsl_runner_kubeflow(self):
     pipeline_path = os.path.join(self.chicago_taxi_pipeline_dir,
                                  'test_pipeline_kubeflow_1.py')
     flags_dict = {
@@ -137,7 +137,7 @@ class BaseHandlerTest(tf.test.TestCase):
     handler = FakeHandler(flags_dict)
     self.assertIsNone(handler._check_dsl_runner())
 
-  def testCheckDslRunnerBeam(self):
+  def test_check_dsl_runner_beam(self):
     pipeline_path = os.path.join(self.chicago_taxi_pipeline_dir,
                                  'test_pipeline_beam_1.py')
     flags_dict = {

@@ -31,7 +31,6 @@ from tfx.types.artifact import ArtifactState
 class MetadataTest(tf.test.TestCase):
 
   def setUp(self):
-    super(MetadataTest, self).setUp()
     self._connection_config = metadata_store_pb2.ConnectionConfig()
     self._connection_config.sqlite.SetInParent()
     self._component_info = data_types.ComponentInfo(
@@ -43,7 +42,7 @@ class MetadataTest(tf.test.TestCase):
     self._pipeline_info2 = data_types.PipelineInfo(
         pipeline_name='my_pipeline', pipeline_root='/tmp', run_id='my_run_id2')
 
-  def testEmptyArtifact(self):
+  def test_empty_artifact(self):
     with metadata.Metadata(connection_config=self._connection_config) as m:
       m.publish_artifacts([])
       eid = m.register_execution(
@@ -87,7 +86,7 @@ class MetadataTest(tf.test.TestCase):
           }
         }""", execution)
 
-  def testArtifact(self):
+  def test_artifact(self):
     with metadata.Metadata(connection_config=self._connection_config) as m:
       self.assertListEqual([], m.get_all_artifacts())
 
@@ -131,7 +130,7 @@ class MetadataTest(tf.test.TestCase):
       self.assertRaises(RuntimeError, m.check_artifact_state, artifact,
                         ArtifactState.PUBLISHED)
 
-  def testExecution(self):
+  def test_execution(self):
     with metadata.Metadata(connection_config=self._connection_config) as m:
 
       # Test prepare_execution.
@@ -219,7 +218,7 @@ class MetadataTest(tf.test.TestCase):
             index: 0
           }""", events[1].path)
 
-  def testFetchPreviousResult(self):
+  def test_fetch_previous_result(self):
     with metadata.Metadata(connection_config=self._connection_config) as m:
 
       # Create an 'previous' execution.
@@ -280,7 +279,7 @@ class MetadataTest(tf.test.TestCase):
       self.assertEqual(previous_artifact.id, current_artifact.id)
       self.assertEqual(previous_artifact.type_id, current_artifact.type_id)
 
-  def testGetCachedExecutionIds(self):
+  def test_get_cached_execution_ids(self):
     with metadata.Metadata(connection_config=self._connection_config) as m:
       mock_store = mock.Mock()
       mock_store.get_events_by_execution_ids.side_effect = [
@@ -317,7 +316,7 @@ class MetadataTest(tf.test.TestCase):
 
       self.assertEqual(1, m._get_cached_execution_id(input_dict, [3, 2, 1]))
 
-  def testSearchArtifacts(self):
+  def test_search_artifacts(self):
     with metadata.Metadata(connection_config=self._connection_config) as m:
       exec_properties = {'log_root': 'path'}
       eid = m.register_execution(
@@ -338,7 +337,7 @@ class MetadataTest(tf.test.TestCase):
           producer_component_id=self._component_info.component_id)
       self.assertEqual(artifact.uri, output_artifact.uri)
 
-  def testPublishSkippedExecution(self):
+  def test_publish_skipped_execution(self):
     with metadata.Metadata(connection_config=self._connection_config) as m:
       exec_properties = {'log_root': 'path'}
       eid = m.register_execution(
@@ -356,7 +355,7 @@ class MetadataTest(tf.test.TestCase):
       m.publish_execution(
           eid, input_dict, output_dict, state=metadata.EXECUTION_STATE_CACHED)
 
-  def testGetExecutionStates(self):
+  def test_get_execution_states(self):
     with metadata.Metadata(connection_config=self._connection_config) as m:
       eid = m.register_execution(
           exec_properties={},

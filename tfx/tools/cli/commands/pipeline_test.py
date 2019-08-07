@@ -41,12 +41,12 @@ class PipelineTest(tf.test.TestCase):
     sys.modules['handler_factory'] = mock.Mock()
 
   # TODO(b/132286477):Change tests after writing default_handler()
-  def testPipelineCreateAuto(self):
+  def test_pipeline_create_auto(self):
     result = self.runner.invoke(pipeline_group,
                                 ['create', '--pipeline_path', 'chicago.py'])
     self.assertIn('Creating pipeline', result.output)
 
-  def testPipelineUpdate(self):
+  def test_pipeline_update(self):
     result = self.runner.invoke(pipeline_group, [
         'update', '--pipeline_path', 'chicago.py', '--engine', 'kubeflow',
         '--package_path', 'chicago.tar.gz', '--iap_client_id', 'fake_id',
@@ -54,17 +54,17 @@ class PipelineTest(tf.test.TestCase):
     ])
     self.assertIn('Updating pipeline', result.output)
 
-  def testPipelineDelete(self):
+  def test_pipeline_delete(self):
     result = self.runner.invoke(
         pipeline_group,
         ['delete', '--pipeline_name', 'chicago', '--engine', 'airflow'])
     self.assertIn('Deleting pipeline', result.output)
 
-  def testPipelineList(self):
+  def test_pipeline_list(self):
     result = self.runner.invoke(pipeline_group, ['list', '--engine', 'airflow'])
     self.assertIn('Listing all pipelines', result.output)
 
-  def testPipelineCompile(self):
+  def test_pipeline_compile(self):
     result = self.runner.invoke(pipeline_group, [
         'compile', '--pipeline_path', 'chicago.py', '--engine', 'kubeflow',
         '--package_path', 'chicago.tar.gz', '--iap_client_id', 'fake_id',
@@ -72,28 +72,28 @@ class PipelineTest(tf.test.TestCase):
     ])
     self.assertIn('Compiling pipeline', result.output)
 
-  def testPipelineInvalidFlag(self):
+  def test_pipeline_invalid_flag(self):
     result = self.runner.invoke(pipeline_group,
                                 ['create', '--pipeline_name', 'chicago.py'])
     self.assertIn('no such option', result.output)
     self.assertNotEqual(0, result.exit_code)
 
-  def testPipelineInvalidFlagType(self):
+  def test_pipeline_invalid_flag_type(self):
     result = self.runner.invoke(pipeline_group,
                                 ['update', '--pipeline_name', 1])
     self.assertNotEqual(0, result.exit_code)
 
-  def testPipelineMissingFlag(self):
+  def test_pipeline_missing_flag(self):
     result = self.runner.invoke(pipeline_group, ['update'])
     self.assertIn('Missing option', result.output)
     self.assertNotEqual(0, result.exit_code)
 
-  def testPipelineInvalidCommand(self):
+  def test_pipeline_invalid_command(self):
     result = self.runner.invoke(pipeline_group, ['rerun'])
     self.assertIn('No such command', result.output)
     self.assertNotEqual(0, result.exit_code)
 
-  def testPipelineEmptyFlagValue(self):
+  def test_pipeline_empty_flag_value(self):
     result = self.runner.invoke(pipeline_group, ['create', '--pipeline_path'])
     self.assertIn('option requires an argument', result.output)
     self.assertNotEqual(0, result.exit_code)

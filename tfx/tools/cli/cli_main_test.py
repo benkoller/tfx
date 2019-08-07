@@ -36,15 +36,15 @@ class CliTest(tf.test.TestCase):
       os.environ['LANG'] = 'en_US.utf-8'
     self.runner = click_testing.CliRunner()
 
-  def testCliPipeline(self):
+  def test_cli_pipeline(self):
     result = self.runner.invoke(cli_group, ['pipeline'])
     self.assertIn('CLI', result.output)
 
-  def testCliRun(self):
+  def test_cli_run(self):
     result = self.runner.invoke(cli_group, ['run'])
     self.assertIn('CLI', result.output)
 
-  def testCliInvalidCommand(self):
+  def test_cli_invalid_command(self):
     result = self.runner.invoke(cli_group, ['pipelin'])
     self.assertNotEqual(0, result.exit_code)
 

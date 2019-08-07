@@ -61,7 +61,7 @@ class _BasicComponent(base_component.BaseComponent):
 
 class ComponentSpecTest(tf.test.TestCase):
 
-  def testComponentspecEmpty(self):
+  def test_componentspec_empty(self):
 
     class EmptyComponentSpec(base_component.ComponentSpec):
       PARAMETERS = {}
@@ -70,7 +70,7 @@ class ComponentSpecTest(tf.test.TestCase):
 
     _ = EmptyComponentSpec()
 
-  def testComponentspecBasic(self):
+  def test_componentspec_basic(self):
     proto = example_gen_pb2.Input()
     proto.splits.extend([
         example_gen_pb2.Input.Split(name='name1', pattern='pattern1'),
@@ -122,7 +122,7 @@ class ComponentSpecTest(tf.test.TestCase):
           input=input_channel,
           output=types.Channel(type_name='WrongType'))
 
-  def testInvalidComponentspecMissingProperties(self):
+  def test_invalid_componentspec_missing_properties(self):
 
     with self.assertRaisesRegexp(TypeError, "Can't instantiate abstract class"):
       class InvalidComponentSpecA(base_component.ComponentSpec):
@@ -148,7 +148,7 @@ class ComponentSpecTest(tf.test.TestCase):
 
       InvalidComponentSpecC()
 
-  def testInvalidComponentspecWrongProperties(self):
+  def test_invalid_componentspec_wrong_properties(self):
 
     with self.assertRaisesRegexp(TypeError,
                                  'must override PARAMETERS with a dict'):
@@ -177,7 +177,7 @@ class ComponentSpecTest(tf.test.TestCase):
 
       InvalidComponentSpecC()
 
-  def testInvalidComponentspecWrongType(self):
+  def test_invalid_componentspec_wrong_type(self):
 
     class WrongTypeComponentSpecA(base_component.ComponentSpec):
       PARAMETERS = {'x': object()}
@@ -215,7 +215,7 @@ class ComponentSpecTest(tf.test.TestCase):
                                  'expect values of type ChannelParameter'):
       _ = WrongTypeComponentSpecD()
 
-  def testInvalidComponentspecDuplicateProperty(self):
+  def test_invalid_componentspec_duplicate_property(self):
 
     class DuplicatePropertyComponentSpec(base_component.ComponentSpec):
       PARAMETERS = {'x': ExecutionParameter(type=int)}
@@ -226,7 +226,7 @@ class ComponentSpecTest(tf.test.TestCase):
                                  'has a duplicate argument'):
       _ = DuplicatePropertyComponentSpec()
 
-  def testComponentspecMissingArguments(self):
+  def test_componentspec_missing_arguments(self):
 
     class SimpleComponentSpec(base_component.ComponentSpec):
       PARAMETERS = {
@@ -250,7 +250,7 @@ class ComponentSpecTest(tf.test.TestCase):
 
 class ComponentTest(tf.test.TestCase):
 
-  def testComponentBasic(self):
+  def test_component_basic(self):
     input_channel = types.Channel(type_name='InputType')
     component = _BasicComponent(folds=10, input=input_channel)
     self.assertEqual(component.component_name, 'MyBasicComponent')
@@ -258,14 +258,14 @@ class ComponentTest(tf.test.TestCase):
     self.assertIsInstance(component.outputs.output, types.Channel)
     self.assertEqual(component.outputs.output.type_name, 'OutputType')
 
-  def testComponentSpecType(self):
+  def test_component_spec_type(self):
 
     with self.assertRaisesRegexp(
         ValueError,
         'expects "spec" argument to be an instance of ComponentSpec'):
       _ = _BasicComponent(spec=object())  # pytype: disable=wrong-arg-types
 
-  def testComponentSpecClass(self):
+  def test_component_spec_class(self):
 
     class MissingSpecComponent(base_component.BaseComponent):
 
@@ -293,7 +293,7 @@ class ComponentTest(tf.test.TestCase):
         'base_component.ComponentSpec'):
       InvalidSpecComponent._validate_component_class()
 
-  def testComponentExecutorClass(self):
+  def test_component_executor_class(self):
 
     class MissingExecutorComponent(base_component.BaseComponent):
 
@@ -321,7 +321,7 @@ class ComponentTest(tf.test.TestCase):
         'base_executor.BaseExecutor'):
       InvalidExecutorComponent._validate_component_class()
 
-  def testComponentCustomExecutor(self):
+  def test_component_custom_executor(self):
 
     class EmptyComponentSpec(base_component.ComponentSpec):
       PARAMETERS = {}
@@ -348,7 +348,7 @@ class ComponentTest(tf.test.TestCase):
           spec=EmptyComponentSpec(),
           custom_executor_class=object)
 
-  def testComponentDriverClass(self):
+  def test_component_driver_class(self):
 
     class InvalidDriverComponent(base_component.BaseComponent):
 

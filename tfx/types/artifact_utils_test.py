@@ -27,7 +27,7 @@ from tfx.types import artifact_utils
 
 class ArtifactUtilsTest(tf.test.TestCase):
 
-  def testGetFromSingleList(self):
+  def test_get_from_single_list(self):
     """Test various retrieval utilities on a single list of Artifact."""
     single_list = [artifact.Artifact('MyTypeName', split='eval')]
     single_list[0].uri = '/tmp/evaluri'
@@ -43,7 +43,7 @@ class ArtifactUtilsTest(tf.test.TestCase):
     with self.assertRaises(ValueError):
       artifact_utils.get_split_uri(single_list, 'train')
 
-  def testGetFromSplitList(self):
+  def test_get_from_split_list(self):
     """Test various retrieval utilities on a list of split Artifact."""
     split_list = []
     for split in ['train', 'eval']:

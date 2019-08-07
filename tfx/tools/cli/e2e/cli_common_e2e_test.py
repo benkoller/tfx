@@ -61,7 +61,7 @@ class CliCommonEndToEndTest(tf.test.TestCase):
     os.environ['AIRFLOW_HOME'] = self._original_airflow_home_value
     os.environ['KUBEFLOW_HOME'] = self._original_kubeflow_home_value
 
-  def testPipelineCreateUnsupportedEngine(self):
+  def test_pipeline_create_unsupported_engine(self):
     pipeline_path = os.path.join(self.chicago_taxi_pipeline_dir,
                                  'test_pipeline_beam_1.py')
     result = self.runner.invoke(cli_group, [
@@ -72,7 +72,7 @@ class CliCommonEndToEndTest(tf.test.TestCase):
     self.assertIn('Creating pipeline', result.output)
     self.assertIn('Engine flink is not supported.', str(result.exception))
 
-  def testPipelineCreateIncorrectRunner(self):
+  def test_pipeline_create_incorrect_runner(self):
     pipeline_path = os.path.join(self.chicago_taxi_pipeline_dir,
                                  'test_pipeline_airflow_1.py')
     result = self.runner.invoke(cli_group, [
@@ -83,7 +83,7 @@ class CliCommonEndToEndTest(tf.test.TestCase):
     self.assertIn('Creating pipeline', result.output)
     self.assertIn('beam runner not found in dsl.', result.output)
 
-  def testPipelineCreateInvalidPipelinePath(self):
+  def test_pipeline_create_invalid_pipeline_path(self):
     pipeline_path = os.path.join(self.chicago_taxi_pipeline_dir,
                                  'test_pipeline.py')
     result = self.runner.invoke(
@@ -93,7 +93,7 @@ class CliCommonEndToEndTest(tf.test.TestCase):
     self.assertIn('Invalid pipeline path: {}'.format(pipeline_path),
                   result.output)
 
-  def testMissingRequiredFlag(self):
+  def test_missing_required_flag(self):
     pipeline_name_1 = 'chicago_taxi_simple'
 
     # Missing flag for pipeline create.

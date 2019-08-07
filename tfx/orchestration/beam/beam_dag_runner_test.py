@@ -98,7 +98,7 @@ class BeamDagRunnerTest(tf.test.TestCase):
       beam_dag_runner,
       _ComponentAsDoFn=_FakeComponentAsDoFn,
   )
-  def testRun(self):
+  def test_run(self):
     component_a = _FakeComponent(
         _FakeComponentSpecA(output=types.Channel(type_name='a')))
     component_b = _FakeComponent(

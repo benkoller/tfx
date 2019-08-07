@@ -28,7 +28,7 @@ from tfx.utils import io_utils
 
 class ExecutorTest(tf.test.TestCase):
 
-  def testDo(self):
+  def test_do(self):
     source_data_dir = os.path.join(
         os.path.dirname(os.path.dirname(__file__)), 'testdata')
 

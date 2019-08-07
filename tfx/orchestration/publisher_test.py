@@ -27,7 +27,6 @@ from tfx.orchestration import publisher
 class PublisherTest(tf.test.TestCase):
 
   def setUp(self):
-    super(PublisherTest, self).setUp()
     self._mock_metadata = tf.test.mock.Mock()
     self._mock_metadata.publish_execution = tf.test.mock.Mock()
     self._input_dict = {
@@ -38,7 +37,7 @@ class PublisherTest(tf.test.TestCase):
     }
     self._execution_id = 100
 
-  def testPrepareExecutionComplete(self):
+  def test_prepare_execution_complete(self):
     input_dict = copy.deepcopy(self._input_dict)
     output_dict = copy.deepcopy(self._output_dict)
 
@@ -51,7 +50,7 @@ class PublisherTest(tf.test.TestCase):
         output_dict=output_dict,
         state=metadata.EXECUTION_STATE_COMPLETE)
 
-  def testPrepareExecutionCached(self):
+  def test_prepare_execution_cached(self):
     input_dict = copy.deepcopy(self._input_dict)
     output_dict = copy.deepcopy(self._output_dict)
 

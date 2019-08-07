@@ -26,7 +26,7 @@ from tfx.proto import example_gen_pb2
 
 class UtilsTest(tf.test.TestCase):
 
-  def testDictToExample(self):
+  def test_dict_to_example(self):
     instance_dict = {
         'int': 10,
         'float': 5.0,
@@ -104,7 +104,7 @@ class UtilsTest(tf.test.TestCase):
         }
         """, example)
 
-  def testMakeOutputSplitNames(self):
+  def test_make_output_split_names(self):
     split_names = utils.generate_output_split_names(
         input_config=example_gen_pb2.Input(splits=[
             example_gen_pb2.Input.Split(name='train', pattern='train/*'),
@@ -124,7 +124,7 @@ class UtilsTest(tf.test.TestCase):
             ])))
     self.assertListEqual(['train', 'eval'], split_names)
 
-  def testMakeDefaultOutputConfig(self):
+  def test_make_default_output_config(self):
     output_config = utils.make_default_output_config(
         utils.make_default_input_config())
     self.assertEqual(2, len(output_config.split_config.splits))

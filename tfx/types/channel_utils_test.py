@@ -28,38 +28,38 @@ from tfx.types.channel import Channel
 
 class ChannelUtilsTest(tf.test.TestCase):
 
-  def testArtifactCollectionAsChannel(self):
+  def test_artifact_collection_as_channel(self):
     instance_a = Artifact('MyTypeName')
     instance_b = Artifact('MyTypeName')
     chnl = channel_utils.as_channel([instance_a, instance_b])
     self.assertEqual(chnl.type_name, 'MyTypeName')
     self.assertItemsEqual(chnl.get(), [instance_a, instance_b])
 
-  def testChannelUtilsAsChannelSuccess(self):
+  def test_channel_utils_as_channel_success(self):
     instance_a = Artifact('MyTypeName')
     instance_b = Artifact('MyTypeName')
     chnl_original = Channel('MyTypeName', artifacts=[instance_a, instance_b])
     chnl_result = channel_utils.as_channel(chnl_original)
     self.assertEqual(chnl_original, chnl_result)
 
-  def testEmptyArtifactCollectionAsChannelFail(self):
+  def test_empty_artifact_collection_as_channel_fail(self):
     with self.assertRaises(ValueError):
       channel_utils.as_channel([])
 
-  def testInvalidSourceAsChannelFail(self):
+  def test_invalid_source_as_channel_fail(self):
     with self.assertRaises(ValueError):
       channel_utils.as_channel(source='invalid source')
 
-  def testTypeCheckSuccess(self):
+  def test_type_check_success(self):
     chnl = Channel('MyTypeName')
     chnl.type_check('MyTypeName')
 
-  def testTypeCheckFail(self):
+  def test_type_check_fail(self):
     chnl = Channel('MyTypeName')
     with self.assertRaises(TypeError):
       chnl.type_check('AnotherTypeName')
 
-  def testUnwrapChannelDict(self):
+  def test_unwrap_channel_dict(self):
     instance_a = Artifact('MyTypeName')
     instance_b = Artifact('MyTypeName')
     channel_dict = {

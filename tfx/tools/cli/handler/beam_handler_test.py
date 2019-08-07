@@ -81,7 +81,7 @@ class BeamHandlerTest(tf.test.TestCase):
     os.environ['BEAM_HOME'] = self._original_beam_home_value
 
   @mock.patch('subprocess.call', _MockSubprocess)
-  def testSavePipeline(self):
+  def test_save_pipeline(self):
     flags_dict = {
         labels.ENGINE_FLAG: self.engine,
         labels.PIPELINE_DSL_PATH: self.pipeline_path
@@ -95,7 +95,7 @@ class BeamHandlerTest(tf.test.TestCase):
                          self.pipeline_args[labels.PIPELINE_NAME])))
 
   @mock.patch('subprocess.call', _MockSubprocess)
-  def testCreatePipeline(self):
+  def test_create_pipeline(self):
     flags_dict = {
         labels.ENGINE_FLAG: self.engine,
         labels.PIPELINE_DSL_PATH: self.pipeline_path
@@ -109,7 +109,7 @@ class BeamHandlerTest(tf.test.TestCase):
             os.path.join(handler_pipeline_path, 'pipeline_args.json')))
 
   @mock.patch('subprocess.call', _MockSubprocess)
-  def testCreatePipelineExistentPipeline(self):
+  def test_create_pipeline_existent_pipeline(self):
     flags_dict = {
         labels.ENGINE_FLAG: self.engine,
         labels.PIPELINE_DSL_PATH: self.pipeline_path
@@ -124,7 +124,7 @@ class BeamHandlerTest(tf.test.TestCase):
             self.pipeline_args[labels.PIPELINE_NAME]))
 
   @mock.patch('subprocess.call', _MockSubprocess)
-  def testUpdatePipeline(self):
+  def test_update_pipeline(self):
     # First create pipeline with test_pipeline.py
     pipeline_path_1 = os.path.join(self.chicago_taxi_pipeline_dir,
                                    'test_pipeline_beam_1.py')
@@ -151,7 +151,7 @@ class BeamHandlerTest(tf.test.TestCase):
             os.path.join(handler_pipeline_path, 'pipeline_args.json')))
 
   @mock.patch('subprocess.call', _MockSubprocess)
-  def testUpdatePipelineNoPipeline(self):
+  def test_update_pipeline_no_pipeline(self):
     # Update pipeline without creating one.
     flags_dict = {
         labels.ENGINE_FLAG: self.engine,
@@ -165,7 +165,7 @@ class BeamHandlerTest(tf.test.TestCase):
             self.pipeline_args[labels.PIPELINE_NAME]))
 
   @mock.patch('subprocess.call', _MockSubprocess)
-  def testCompilePipeline(self):
+  def test_compile_pipeline(self):
     flags_dict = {
         labels.ENGINE_FLAG: self.engine,
         labels.PIPELINE_DSL_PATH: self.pipeline_path
@@ -176,7 +176,7 @@ class BeamHandlerTest(tf.test.TestCase):
     self.assertIn('Pipeline compiled successfully', captured.contents())
 
   @mock.patch('subprocess.call', _MockSubprocess2)
-  def testCompilePipelineNoPipelineArgs(self):
+  def test_compile_pipeline_no_pipeline_args(self):
     flags_dict = {
         labels.ENGINE_FLAG: self.engine,
         labels.PIPELINE_DSL_PATH: self.pipeline_path
@@ -189,7 +189,7 @@ class BeamHandlerTest(tf.test.TestCase):
         'Unable to compile pipeline. Check your pipeline dsl.')
 
   @mock.patch('subprocess.call', _MockSubprocess)
-  def testDeletePipeline(self):
+  def test_delete_pipeline(self):
     # First create a pipeline.
     flags_dict = {
         labels.ENGINE_FLAG: self.engine,
@@ -210,7 +210,7 @@ class BeamHandlerTest(tf.test.TestCase):
     self.assertFalse(tf.io.gfile.exists(handler_pipeline_path))
 
   @mock.patch('subprocess.call', _MockSubprocess)
-  def testDeletePipelineNonExistentPipeline(self):
+  def test_delete_pipeline_non_existent_pipeline(self):
     flags_dict = {
         labels.ENGINE_FLAG: self.engine,
         labels.PIPELINE_NAME: self.pipeline_name
@@ -222,7 +222,7 @@ class BeamHandlerTest(tf.test.TestCase):
         str(err.exception),
         'Pipeline {} does not exist.'.format(flags_dict[labels.PIPELINE_NAME]))
 
-  def testListPipelinesNonEmpty(self):
+  def test_list_pipelines_non_empty(self):
     # First create two pipelines in the dags folder.
     handler_pipeline_path_1 = os.path.join(os.environ['BEAM_HOME'],
                                            'pipeline_1')
@@ -240,7 +240,7 @@ class BeamHandlerTest(tf.test.TestCase):
     self.assertIn('pipeline_1', captured.contents())
     self.assertIn('pipeline_2', captured.contents())
 
-  def testListPipelinesEmpty(self):
+  def test_list_pipelines_empty(self):
     flags_dict = {labels.ENGINE_FLAG: self.engine}
     handler = beam_handler.BeamHandler(flags_dict)
     with self.captureWritesToStream(sys.stdout) as captured:
@@ -248,7 +248,7 @@ class BeamHandlerTest(tf.test.TestCase):
     self.assertIn('No pipelines to display.', captured.contents())
 
   @mock.patch('subprocess.call', _MockSubprocess3)
-  def testCreateRun(self):
+  def test_create_run(self):
     # Create a pipeline in dags folder.
     handler_pipeline_path = os.path.join(os.environ['BEAM_HOME'],
                                          self.pipeline_name)
@@ -268,7 +268,7 @@ class BeamHandlerTest(tf.test.TestCase):
     self.assertIn("['python', '" + self.pipeline_path + "']",
                   captured.contents())
 
-  def testCreateRunNoPipeline(self):
+  def test_create_run_no_pipeline(self):
     # Run pipeline without creating one.
     flags_dict = {
         labels.ENGINE_FLAG: self.engine,
@@ -281,7 +281,7 @@ class BeamHandlerTest(tf.test.TestCase):
         str(err.exception),
         'Pipeline {} does not exist.'.format(flags_dict[labels.PIPELINE_NAME]))
 
-  def testDeleteRun(self):
+  def test_delete_run(self):
     # Create a pipeline in dags folder.
     handler_pipeline_path = os.path.join(os.environ['BEAM_HOME'],
                                          self.pipeline_name)
@@ -294,7 +294,7 @@ class BeamHandlerTest(tf.test.TestCase):
       handler.delete_run()
     self.assertIn('Not supported for Beam.', captured.contents())
 
-  def testTerminateRun(self):
+  def test_terminate_run(self):
     # Create a pipeline in dags folder.
     handler_pipeline_path = os.path.join(os.environ['BEAM_HOME'], 'dags',
                                          self.pipeline_name)
@@ -307,7 +307,7 @@ class BeamHandlerTest(tf.test.TestCase):
       handler.terminate_run()
     self.assertIn('Not supported for Beam.', captured.contents())
 
-  def testListRuns(self):
+  def test_list_runs(self):
     # Create a pipeline in dags folder.
     handler_pipeline_path = os.path.join(os.environ['BEAM_HOME'],
                                          self.pipeline_name)
@@ -320,7 +320,7 @@ class BeamHandlerTest(tf.test.TestCase):
       handler.list_runs()
     self.assertIn('Not supported for Beam.', captured.contents())
 
-  def testGetRun(self):
+  def test_get_run(self):
     # Create a pipeline in dags folder.
     handler_pipeline_path = os.path.join(os.environ['BEAM_HOME'],
                                          self.pipeline_name)

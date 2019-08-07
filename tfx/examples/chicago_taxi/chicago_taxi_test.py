@@ -37,13 +37,12 @@ class TaxiTest(tf.test.TestCase):
   """Unit test for taxi util."""
 
   def setUp(self):
-    super(TaxiTest, self).setUp()
     self._working_dir = os.path.join(
         os.environ.get('TEST_UNDECLARED_OUTPUTS_DIR', self.get_temp_dir()),
         self._testMethodName)
     file_io.recursive_create_dir(self._working_dir)
 
-  def testPipeline(self):
+  def test_pipeline(self):
     # TODO(b/113256925): Split this test to test preprocess and training
     # separately. Possibly using tft_unit to test the result of transform_data.
     stats_file = os.path.join(self._working_dir, 'train_stats')

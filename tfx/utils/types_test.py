@@ -30,7 +30,7 @@ from tfx.utils import types
 
 class TypesTest(tf.test.TestCase):
 
-  def testTfxtypeDeprecated(self):
+  def test_tfxtype_deprecated(self):
     print(deprecation._PRINTED_WARNING)
     with mock.patch.object(tf_logging, 'warning'):
       warn_mock = mock.MagicMock()
@@ -44,7 +44,7 @@ class TypesTest(tf.test.TestCase):
     print(deprecation._PRINTED_WARNING)
     del deprecation._PRINTED_WARNING[artifact.Artifact]
 
-  def testTfxartifactDeprecated(self):
+  def test_tfxartifact_deprecated(self):
     print(deprecation._PRINTED_WARNING)
     with mock.patch.object(tf_logging, 'warning'):
       warn_mock = mock.MagicMock()
@@ -58,7 +58,7 @@ class TypesTest(tf.test.TestCase):
     print(deprecation._PRINTED_WARNING)
     del deprecation._PRINTED_WARNING[artifact.Artifact]
 
-  def testParseTfxTypeDictDeprecated(self):
+  def test_parse_tfx_type_dict_deprecated(self):
     with mock.patch.object(tf_logging, 'warning'):
       warn_mock = mock.MagicMock()
       tf_logging.warning = warn_mock
@@ -67,7 +67,7 @@ class TypesTest(tf.test.TestCase):
       self.assertIn('tfx.utils.types.parse_tfx_type_dict has been renamed to',
                     warn_mock.call_args[0][5])
 
-  def testJsonifyTfxTypeDictDeprecated(self):
+  def test_jsonify_tfx_type_dict_deprecated(self):
     with mock.patch.object(tf_logging, 'warning'):
       warn_mock = mock.MagicMock()
       tf_logging.warning = warn_mock

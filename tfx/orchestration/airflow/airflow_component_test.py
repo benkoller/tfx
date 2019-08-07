@@ -51,7 +51,6 @@ class _FakeComponent(base_component.BaseComponent):
 class AirflowComponentTest(tf.test.TestCase):
 
   def setUp(self):
-    super(AirflowComponentTest, self).setUp()
     self._component = _FakeComponent(
         _FakeComponentSpec(
             input=types.Channel(type_name='type_a'),
@@ -69,7 +68,7 @@ class AirflowComponentTest(tf.test.TestCase):
   @mock.patch(
       'tfx.orchestration.component_launcher.ComponentLauncher'
   )
-  def testAirflowAdaptor(self, mock_component_launcher_class):
+  def test_airflow_adaptor(self, mock_component_launcher_class):
     fake_dagrun = collections.namedtuple('fake_dagrun', ['run_id'])
     mock_ti = mock.Mock()
     mock_ti.get_dagrun.return_value = fake_dagrun('run_id')
@@ -88,7 +87,7 @@ class AirflowComponentTest(tf.test.TestCase):
     mock_component_launcher.launch.assert_called_once()
 
   @mock.patch('functools.partial')
-  def testAirflowComponent(self, mock_functools_partial):
+  def test_airflow_component(self, mock_functools_partial):
     airflow_component.AirflowComponent(
         parent_dag=self._parent_dag,
         component=self._component,
