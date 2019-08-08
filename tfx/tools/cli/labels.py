@@ -15,14 +15,20 @@
 
 ENGINE_FLAG = 'engine'
 PIPELINE_DSL_PATH = 'pipeline_dsl_path'
+# Path to the output workflow file for Kubeflow pipelines.
 PIPELINE_PACKAGE_PATH = 'pipeline_package_path'
 PIPELINE_NAME = 'pipeline_name'
 TFX_JSON_EXPORT_PIPELINE_ARGS_PATH = 'TFX_JSON_EXPORT_PIPELINE_ARGS_PATH'
 AIRFLOW_PACKAGE_NAME = 'apache-airflow'
 KUBEFLOW_PACKAGE_NAME = 'kfp'
-RUN_ID = 'run'
+RUN_ID = 'run_id'
+# Client ID for IAP protected endpoint.
 IAP_CLIENT_ID = 'iap_client_id'
+# Endpoint of the KFP API service to connect.
 ENDPOINT = 'endpoint'
+# Kubernetes namespace to connect to the KFP API.
 NAMESPACE = 'namespace'
+# Pipeline id generated when pipeline is uploaded to KFP server.
 PIPELINE_ID = 'pipeline_id'
+# Experiment id generated when a new experiment is created on KFP server.
 EXPERIMENT_ID = 'experiment_id'

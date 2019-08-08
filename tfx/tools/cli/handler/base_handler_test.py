@@ -148,6 +148,66 @@ class BaseHandlerTest(tf.test.TestCase):
     handler = FakeHandler(flags_dict)
     self.assertIsNone(handler._check_dsl_runner())
 
+  def testGetHandlerPipelinePathBeam(self):
+    flags_dict = {
+        labels.ENGINE_FLAG: 'beam',
+        labels.PIPELINE_NAME: 'chicago_taxi_beam'
+    }
+    handler = FakeHandler(flags_dict)
+    self.assertTrue(
+        handler._get_handler_pipeline_path(flags_dict[labels.PIPELINE_NAME]),
+        os.path.join(os.environ['HOME'], 'beam',
+                     flags_dict[labels.PIPELINE_NAME], ''))
+
+  def testGetHandlerPipelinePathAirflow(self):
+    flags_dict = {
+        labels.ENGINE_FLAG: 'airflow',
+        labels.PIPELINE_NAME: 'chicago_taxi_airflow'
+    }
+    handler = FakeHandler(flags_dict)
+    self.assertTrue(
+        handler._get_handler_pipeline_path(flags_dict[labels.PIPELINE_NAME]),
+        os.path.join(os.environ['HOME'], 'airflow', 'dags',
+                     flags_dict[labels.PIPELINE_NAME], ''))
+
+  def testGetHandlerPipelinePathKubeflow(self):
+    flags_dict = {
+        labels.ENGINE_FLAG: 'kubeflow',
+        labels.PIPELINE_NAME: 'chicago_taxi_kubeflow'
+    }
+    handler = FakeHandler(flags_dict)
+    self.assertTrue(
+        handler._get_handler_pipeline_path(flags_dict[labels.PIPELINE_NAME]),
+        os.path.join(os.environ['HOME'], 'kubeflow_pipelines',
+                     flags_dict[labels.PIPELINE_NAME], ''))
+
+  def testCheckPipelineFolderNotRequired(self):
+    flags_dict = {
+        labels.ENGINE_FLAG: 'engine',
+        labels.PIPELINE_NAME: 'pipeline'
+    }
+    handler = FakeHandler(flags_dict)
+    tf.io.gfile.makedirs(
+        os.path.join(os.environ['HOME'], 'engine', 'pipeline', ''))
+    with self.assertRaises(SystemExit) as err:
+      handler._check_pipeline_folder(
+          flags_dict[labels.PIPELINE_NAME], required=False)
+    self.assertTrue(
+        str(err.exception), 'Pipeline "{}" already exists.'.format(
+            flags_dict[labels.PIPELINE_NAME]))
+
+  def testCheckPipelineFolderRequired(self):
+    flags_dict = {
+        labels.ENGINE_FLAG: 'beam',
+        labels.PIPELINE_NAME: 'chicago_taxi_beam'
+    }
+    handler = FakeHandler(flags_dict)
+    with self.assertRaises(SystemExit) as err:
+      handler._check_pipeline_folder(flags_dict[labels.PIPELINE_NAME])
+    self.assertTrue(
+        str(err.exception), 'Pipeline "{}" does not exist.'.format(
+            flags_dict[labels.PIPELINE_NAME]))
+
 
 if __name__ == '__main__':
   tf.test.main()

@@ -40,7 +40,8 @@ class AirflowSubprocess(object):
   def __enter__(self):
     self._sub_process = subprocess.Popen(self._args)
 
-    # Wait for new dags to be added to scheduler.
+    # The airflow scheduler adds new DAGs in intervals. So we wait for new dags
+    # to be picked up by the scheduler.
     time.sleep(5)
     return self
 

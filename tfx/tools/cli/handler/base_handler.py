@@ -33,9 +33,6 @@ from tfx.tools.cli import labels
 from tfx.utils import io_utils
 
 
-# TODO(b/132286477): Check if _check_pipeline_folder, _get_handler_home and
-# _get_handler_pipeline_path can be shifted to base_handler after all handlers
-# are implemented.
 class BaseHandler(with_metaclass(abc.ABCMeta, object)):
   """Base Handler for CLI.
 
@@ -99,9 +96,9 @@ class BaseHandler(with_metaclass(abc.ABCMeta, object)):
 
   def _check_pipeline_dsl_path(self) -> None:
     """Check if pipeline dsl path exists."""
-    if not tf.io.gfile.exists(self.flags_dict[labels.PIPELINE_DSL_PATH]):
-      sys.exit('Invalid pipeline path: {}'
-               .format(self.flags_dict[labels.PIPELINE_DSL_PATH]))
+    pipeline_dsl_path = self.flags_dict[labels.PIPELINE_DSL_PATH]
+    if not tf.io.gfile.exists(pipeline_dsl_path):
+      sys.exit('Invalid pipeline path: {}'.format(pipeline_dsl_path))
 
   def _check_dsl_runner(self) -> None:
     """Check if runner in dsl is same as engine flag."""
@@ -118,8 +115,13 @@ class BaseHandler(with_metaclass(abc.ABCMeta, object)):
         sys.exit('{} runner not found in dsl.'.format(engine_flag))
 
   def _extract_pipeline_args(self) -> Dict[Text, Any]:
-    """Get pipeline args from the DSL."""
-    if os.path.isdir(self.flags_dict[labels.PIPELINE_DSL_PATH]):
+    """Get pipeline args from the DSL.
+
+    Returns:
+      Python dictionary with pipeline details extracted from DSL.
+    """
+    pipeline_dsl_path = self.flags_dict[labels.PIPELINE_DSL_PATH]
+    if os.path.isdir(pipeline_dsl_path):
       sys.exit('Provide dsl file path.')
 
     # Create an environment for subprocess.
@@ -132,8 +134,7 @@ class BaseHandler(with_metaclass(abc.ABCMeta, object)):
     temp_env[labels.TFX_JSON_EXPORT_PIPELINE_ARGS_PATH] = temp_file
 
     # Run dsl with mock environment to store pipeline args in temp_file.
-    self._subprocess_call(['python', self.flags_dict[labels.PIPELINE_DSL_PATH]],
-                          env=temp_env)
+    self._subprocess_call(['python', pipeline_dsl_path], env=temp_env)
     if os.stat(temp_file).st_size != 0:
       # Load pipeline_args from temp_file for TFX pipelines
       with open(temp_file, 'r') as f:
@@ -142,8 +143,7 @@ class BaseHandler(with_metaclass(abc.ABCMeta, object)):
       # For non-TFX pipelines, extract pipeline name from the dsl filename.
       pipeline_args = {
           labels.PIPELINE_NAME:
-              os.path.basename(self.flags_dict[labels.PIPELINE_DSL_PATH]
-                              ).split('.')[0]
+              os.path.basename(pipeline_dsl_path).split('.')[0]
       }
 
     # Delete temp file
@@ -155,7 +155,7 @@ class BaseHandler(with_metaclass(abc.ABCMeta, object)):
     """Sets handler home.
 
     Args:
-      home_dir: directory name to store pipelines
+      home_dir: Directory name to store pipelines.
 
     Returns:
       Path to handler home directory.
@@ -172,3 +172,35 @@ class BaseHandler(with_metaclass(abc.ABCMeta, object)):
     return_code = subprocess.call(command, env=env)
     if return_code != 0:
       sys.exit('Error while running "{}" '.format(' '.join(command)))
+
+  def _get_handler_pipeline_path(self, pipeline_name: Text) -> Text:
+    """Path to pipeline folder for a given engine.
+
+    Args:
+      pipeline_name: Name of the pipeline.
+
+    Returns:
+      Path to pipeline folder.
+    """
+    engine_flag = self.flags_dict[labels.ENGINE_FLAG]
+    if engine_flag == 'airflow':
+      return os.path.join(
+          self._get_handler_home(engine_flag), 'dags', pipeline_name, '')
+    return os.path.join(self._get_handler_home(engine_flag), pipeline_name, '')
+
+  def _check_pipeline_folder(self,
+                             pipeline_name: Text,
+                             required: bool = True) -> None:
+    """Check if pipeline folder exists and if not, exit system.
+
+    Args:
+      pipeline_name: Name of the pipeline.
+      required: Set it as True if pipeline needs to exist else set it to False.
+    """
+    handler_pipeline_path = self._get_handler_pipeline_path(pipeline_name)
+    # Check if pipeline folder exists.
+    exists = tf.io.gfile.exists(handler_pipeline_path)
+    if required and not exists:
+      sys.exit('Pipeline "{}" does not exist.'.format(pipeline_name))
+    elif not required and exists:
+      sys.exit('Pipeline "{}" already exists.'.format(pipeline_name))
