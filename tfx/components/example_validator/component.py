@@ -52,8 +52,8 @@ class ExampleValidator(base_component.BaseComponent):
         components are declared in the same pipeline.
     """
     output = output or types.Channel(
-        type=standard_artifacts.ExampleValidationResult,
-        artifacts=[standard_artifacts.ExampleValidationResult()])
+        type=standard_artifacts.ExampleAnomalies,
+        artifacts=[standard_artifacts.ExampleAnomalies()])
     spec = ExampleValidatorSpec(
         stats=channel_utils.as_channel(stats),
         schema=channel_utils.as_channel(schema),
